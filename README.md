@@ -1,0 +1,2 @@
+# RailsApp_circleci_practice_22
+CircleCIを使用してAWSのリソースの作成からRailsアプリのデプロイを自動化
