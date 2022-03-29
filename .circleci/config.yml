@@ -8,8 +8,12 @@ jobs:
       - checkout
       - aws-cli/setup
       - run:
-          name: "test output aws s3 ls"
-          command:  "aws s3 ls"
+          name: "create stack"
+          command:  |
+            aws cloudformation create-stack \
+            --stack-name myteststack \
+            --template-body s3://circleci-cloudformation \
+            --parameters ParameterKey=DBPassword,ParameterValue=12345678
 
 workflows:
   aws-cli:
