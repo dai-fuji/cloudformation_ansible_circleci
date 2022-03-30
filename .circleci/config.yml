@@ -12,7 +12,7 @@ jobs:
           command:  |
             aws cloudformation create-stack \
             --stack-name myteststack \
-            --template-url https://circleci-cloudformation.s3.ap-northeast-1.amazonaws.com/rails-env.yml \
+            --template-body ../cloudformation/service.yml \
             --parameters ParameterKey=DBPassword,ParameterValue=12345678
 
 workflows:
