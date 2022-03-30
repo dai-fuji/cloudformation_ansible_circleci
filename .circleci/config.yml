@@ -14,7 +14,7 @@ jobs:
             --stack-name myteststack \
             --template-body file://cloudformation/service.yml \
             --parameters ParameterKey=DBPassword,ParameterValue=12345678
-            aws cloudformation wait create-stack \
+            aws cloudformation wait stack-create-complete \
             --stack-name myteststack
 
 workflows:
