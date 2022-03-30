@@ -12,7 +12,7 @@ jobs:
           command:  |
             aws cloudformation create-stack \
             --stack-name myteststack \
-            --template-body ../cloudformation/service.yml \
+            --template-body file://../cloudformation/service.yml \
             --parameters ParameterKey=DBPassword,ParameterValue=12345678
 
 workflows:
