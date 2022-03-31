@@ -11,3 +11,17 @@ Resources:
       Tags:
         - Key: Name
           Value: cfn-vpc1
+#-----------------------------------------------------------------------------------------
+# Subnet public/2groups private/2groups
+#-----------------------------------------------------------------------------------------
+  CfnPracticePublicSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties: 
+      AvailabilityZone: !Select #!Selectでリストから選択
+        - 0
+        - Fn::GetAZs: !Ref AWS::Region
+      CidrBlock: 10.0.10.0/24
+      Tags: 
+        - Key: Name
+          Value: cfn-public-subnet-1
+      VpcId: !Ref CfnPracticeVpc1
