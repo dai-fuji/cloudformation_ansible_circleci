@@ -10,4 +10,4 @@ Resources:
       CidrBlock: 10.0.0.0/16
       Tags:
         - Key: Name
-          Value: cfn-vpc
+          Value: cfn-vpc1
