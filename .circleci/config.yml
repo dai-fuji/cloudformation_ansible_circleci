@@ -28,7 +28,7 @@ jobs:
               aws cloudformation update-stack \
               --stack-name myteststack2 \
               --template-body file://service/infrastructure.yml
-              if [ $? -ne 0]; then
+              if [ $? -ne 0 ]; then
                 echo 3333333333
                 exit 0
               fi
