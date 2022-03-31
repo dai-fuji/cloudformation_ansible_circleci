@@ -29,11 +29,13 @@ jobs:
                 echo 3333333333
                 exit 0
               fi
+              echo 4444444444
               aws cloudformation wait stack-update-complete \
               --stack-name myteststack2
             else
-              :
+              echo 5555555555
             fi
+            echo 6666666666
 
 workflows:
   aws-cli:
