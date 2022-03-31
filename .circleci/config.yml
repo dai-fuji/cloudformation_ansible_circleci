@@ -1,8 +1,9 @@
 version: 2.1
 orbs:
   aws-cli:  circleci/aws-cli@2.0
+
 jobs:
-  test:
+  create-cloudformation-stack:
     executor: aws-cli/default
     steps:
       - checkout
@@ -10,9 +11,9 @@ jobs:
       - run:
           name: "create stack"
           command:  |
-            set -e
+            set -e 
             aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE | grep myteststack
-            if [ !$? eq 0]; then
+            if [ !$? eq 0 ]; then
               aws cloudformation create-stack \
               --stack-name myteststack \
               --template-body file://service/infrastructure.yml \
@@ -20,8 +21,10 @@ jobs:
               aws cloudformation wait stack-create-complete \
               --stack-name myteststack
             fi
+      
 
 workflows:
   aws-cli:
     jobs:
-      - test
+      - create-cloudformation-stack
+      - 
