@@ -1,0 +1,39 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: cfn-practice
+Resources: 
+#-----------------------------------------------------------------------------------------
+# VPC
+#-----------------------------------------------------------------------------------------
+  CfnPracticeVpc1:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      Tags:
+        - Key: Name
+          Value: cfn-vpc1
+#-----------------------------------------------------------------------------------------
+# Subnet public/2groups private/2groups
+#-----------------------------------------------------------------------------------------
+  CfnPracticePublicSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties: 
+      AvailabilityZone: !Select #!Selectでリストから選択
+        - 0
+        - Fn::GetAZs: !Ref AWS::Region
+      CidrBlock: 10.0.10.0/24
+      Tags: 
+        - Key: Name
+          Value: cfn-public-subnet-1
+      VpcId: !Ref CfnPracticeVpc1
+
+  CfnPracticePublicSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties: 
+      AvailabilityZone: !Select #!Selectでリストから選択
+        - 0
+        - Fn::GetAZs: !Ref AWS::Region
+      CidrBlock: 10.0.11.0/24
+      Tags: 
+        - Key: Name
+          Value: cfn-public-subnet-2
+      VpcId: !Ref CfnPracticeVpc1
