@@ -13,7 +13,7 @@ jobs:
           name: "create stack"
           command:  |
             set +e 
-            aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE \| grep myteststack
+            aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE \| grep mystack
             if [ $? -ne 0 ];  then
               aws cloudformation create-stack \
               --stack-name mystack \
@@ -28,7 +28,7 @@ jobs:
                 exit 0
               fi
               aws cloudformation wait stack-update-complete \
-              --stack-name myteststack2
+              --stack-name mystack2
             fi
 
 
