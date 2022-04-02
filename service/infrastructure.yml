@@ -170,3 +170,9 @@ Resources:
       Tags: 
         - Key: Name
           Value: cfn-rails-ec2-instance
+
+  CfnEIP:
+    Type: AWS::EC2::EIPAssociation
+    Properties: 
+      InstanceId: !Ref CfnRailsEC2Instance
+      EIP: 35.78.146.159
