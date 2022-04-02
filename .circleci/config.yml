@@ -1,7 +1,7 @@
 version: 2.1
 orbs:
   aws-cli:  circleci/aws-cli@2.0
-  ansible-playbook: orbss/ansible-playbook@0.0.5
+
 
 jobs:
   create-stack:
@@ -31,8 +31,6 @@ jobs:
               --stack-name myteststack2
             fi
 
-  ansible-playbook:
-    
 
 
 
