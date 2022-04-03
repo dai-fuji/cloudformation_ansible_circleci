@@ -48,11 +48,10 @@
   when: not was_cloned_rails.stat.exists
 
 - name: Install version 2.2.17 of bundler
-  community.general.gem:
-    name: bundler
-    executable: ~/.rbenv/shims/gem
-    version: 2.2.17
-    state: present
+  shell:  bash -lc "gem install bundller 2.2.17"
+  args:
+    chdir: "{{ app_root_dir }}"
+  when: not was_cloned_rails.stat.exists
 
 - name: install gems
   shell:  bash -lc "bundle install"
