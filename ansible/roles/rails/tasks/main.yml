@@ -54,7 +54,7 @@
     dest: "{{ app_root_dir }}"
   when: not was_cloned_rails.stat.exists
 
-- name: install bundler 2.3.10
+- name: ooooooo
   shell: bash -lc "gem install bundler 2.3.10"
   args:
     chdir: "{{ app_root_dir }}"
