@@ -22,7 +22,7 @@
 #bundlerがインストールされているか
 - name: check bundler installed
   shell:  bash -lc "which bundler"
-  resister: has bundler
+  register: has bundler
   changed_when: False
   ignore_errors: yes
 
