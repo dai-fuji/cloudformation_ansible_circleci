@@ -39,7 +39,7 @@ jobs:
     steps:
       - checkout
       - ansible-playbook/install:
-          version: 2.13.3
+          version: 2.29.6
       - ansible-playbook/playbook:
           inventory: ANSIBLE_INVENTORY
           playbook: ansible/playbook.yml
@@ -50,4 +50,8 @@ workflows:
   provisioning-deploy:
     jobs:
       - create-stack
-      - execute-ansible-playbook
+      - execute-ansible-playbook:
+          requires:
+            - create-stack
+
+
