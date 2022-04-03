@@ -59,7 +59,6 @@
   args:
     chdir: "{{ app_root_dir }}"
   when: has_bundler is failed
-  ignore_errors: yes
 
 - name: check bundler 2.3.10 installed 2
   shell:  bash -lc "bundler -v | grep 2.3.10"
