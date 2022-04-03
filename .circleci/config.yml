@@ -1,8 +1,7 @@
 version: 2.1
 orbs:
   aws-cli:  circleci/aws-cli@2.0
-
-
+  ansible-playbook: orbss/ansible-playbook@0.0.5
 
 jobs:
   create-stack:
@@ -34,8 +33,21 @@ jobs:
                 --stack-name mystack
               fi
             fi
+            
+  execute-ansible-playbook:
+    executor: ansible-playbook/default
+    steps:
+      - checkout
+      - ansible-playbook/install:
+          version: 2.13.3
+      - ansible-playbook/playbook:
+          inventory: ANSIBLE_INVENTORY
+          playbook: ansible/playbook.yml
+          playbook-options: -u ec2-user
+          private-key: ANSIBLE_SSH_KEY
 
 workflows:
-  aws-cli:
+  provisioning-deploy:
     jobs:
       - create-stack
+      - execute-ansible-playbook

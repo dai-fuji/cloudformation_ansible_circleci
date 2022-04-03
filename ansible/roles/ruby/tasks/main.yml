@@ -1,0 +1,55 @@
+#---------------------------
+# check status
+#---------------------------
+- name: check was rbenv already installed
+  shell: bash -lc "rbenv version"
+  register: has_rbenv
+  changed_when: False
+  ignore_errors: yes
+
+- name: check was ruby-build already installed
+  shell: bash -lc "ruby-build --version"
+  register: has_ruby_build
+  changed_when: False
+  ignore_errors: yes
+
+- name: check was ruby-version already installed
+  shell: bash -lc "rbenv version | grep {{ ruby_version }}"
+  register: has_ruby_version
+  changed_when: False
+  ignore_errors: yes
+
+# ignore_errors = 対象のタスクでエラーが発生しても次のタスクに進むことができる
+# changed_when = 実行結果のステータスを変更することができる。（shellを使用するとchangedになる、分かりづらいのでFalseにしてchangedとさせない）
+
+#---------------------------
+# install
+#---------------------------
+- name: install rbenv
+  git:
+    repo: https://github.com/sstephenson/rbenv.git
+    dest: "{{ home_dir }}/.rbenv"
+  when: has_rbenv is failed
+
+- name: install ruby-build
+  git:
+    repo: https://github.com/sstephenson/ruby-build.git
+    dest: "{{ home_dir }}/.rbenv/plugins/ruby-build"
+  when: has_ruby_build is failed
+
+- name: register path and update bash
+  shell:  |
+    echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bash_profile
+    echo 'export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"' >> ~/.bash_profile
+    echo 'eval "$(rbenv init -)"' >> ~/.bash_profile
+    "source {{ home_dir }}/.bash_profile"
+    rbenv rehash
+  when: has_rbenv is failed
+
+- name: ruby install
+  shell:  bash -lc "rbenv install {{ ruby_version }}"
+  when: has_ruby_version is failed
+
+- name: ruby set global
+  shell:  bash -lc "rbenv global {{ ruby_version }}"
+  when: has_ruby_version is failed

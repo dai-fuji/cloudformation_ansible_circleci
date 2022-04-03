@@ -1,0 +1,71 @@
+#---------------------------
+# check status
+#---------------------------
+
+#ディレクトリが存在するか
+- name: check has directory var/www
+  stat:
+    path: "{{ app_root_dir }}"
+  register: has_directory_srv
+
+- name: check has Gemfile
+  stat:
+    path: "{{ app_root_dir }}/Gemfile"
+  register: has_directory_gemfile
+
+#クローンされているか
+- name: check has directory rails-app
+  stat:
+    path: "{{ app_root_dir }}/app"
+  register: was_cloned_rails
+
+#---------------------------
+# install
+#---------------------------
+
+- name: install mysql
+  yum:
+    name:
+      - mysql
+      - mysql-devel
+    state:  installed
+  become: yes
+
+- name: create dir for rails-app
+  file:
+    path: "{{ app_root_dir }}"
+    state: directory
+    owner: ec2-user
+    group: ec2-user
+    mode: 0775
+  become: yes
+  when: not has_directory_srv.stat.exists
+
+- name: clone rails-app
+  git:
+    repo: https://github.com/dai-fuji/rails_practice.git
+    dest: "{{ app_root_dir }}"
+  when: not was_cloned_rails.stat.exists
+
+- name: Install version 2.2.17 of bundler
+  community.general.gem:
+    name: bundler
+    executable: ~/.rbenv/shims/gem
+    version: 2.2.17
+    state: present
+
+- name: install gems
+  shell:  bash -lc "bundle install"
+  args:
+    chdir: "{{ app_root_dir }}"
+  when: not was_cloned_rails.stat.exists or has_directory_gemfile.stat.exists
+
+- name: install webpacker
+  shell: bash -lc "bundle exec rails webpacker:install"
+  args:
+    chdir: "{{ app_root_dir }}"
+  when: not was_cloned_rails.stat.exists or has_directory_gemfile.stat.exists
+
+
+
+

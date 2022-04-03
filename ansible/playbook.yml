@@ -1,0 +1,17 @@
+- hosts: all
+  
+  vars: 
+    home_dir: /home/ec2-user
+    app_root_dir: /var/www/rails_app
+    ruby_version: 2.6.3
+    node_version: 16
+    bundler:  2.2.17
+    my_app_repo:  https://github.com/dai-fuji/rails_practice.git
+
+  roles:
+    - general
+    - node_yarn
+    - ruby
+    - rails
+    - nginx
+    - setup_server
