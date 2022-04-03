@@ -39,7 +39,7 @@ jobs:
     steps:
       - checkout
       - ansible-playbook/install:
-          version: 2.29.6
+          version: 2.9.26
       - ansible-playbook/playbook:
           inventory: ANSIBLE_INVENTORY
           playbook: ansible/playbook.yml
