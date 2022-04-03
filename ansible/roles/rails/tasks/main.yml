@@ -20,9 +20,9 @@
   register: was_cloned_rails
 
 #bundlerがインストールされているか
-- name: check bundler 2.3.10 installed
+- name: check bundler 2.3.10 installed 1
   shell:  bash -lc "bundler -v| grep 2.3.10"
-  register: has_bundler
+  register: has_bundler_1
   changed_when: False
   ignore_errors: yes
 
@@ -56,11 +56,18 @@
     dest: "{{ app_root_dir }}"
   when: not was_cloned_rails.stat.exists
 
+#インストール成功時も警告発生しエラーとなるため、ignore_errorsを記述
 - name: Install version 2.3.10 of bundler
   shell:  bash -lc "gem install bundler 2.3.10"
   args:
     chdir: "{{ app_root_dir }}"
   when: has_bundler is failed
+  ignore_errors: yes
+
+#上記により正常にインストールされているか不明のため、確認ステップを記述
+- name: check bundler 2.3.10 installed 2
+  shell:  bash -lc "bundler -v| grep 2.3.10"
+  changed_when: False
 
 - name: install gems
   shell:  bash -lc "bundle install"
