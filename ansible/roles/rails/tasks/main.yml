@@ -55,14 +55,14 @@
   when: not was_cloned_rails.stat.exists
 
 - name: Install version 2.3.10 of bundler
-  shell:  bash -lc "gem install bundler 2.3.10"
+  shell: bash -lc "gem install bundler 2.3.10"
   args:
     chdir: "{{ app_root_dir }}"
   when: has_bundler is failed
   ignore_errors: yes
 
 - name: check bundler 2.3.10 installed 2
-  shell:  bash -lc "bundler -v| grep 2.3.10"
+  shell:  bash -lc "bundler -v | grep 2.3.10"
   changed_when: False
 
 - name: install gems
