@@ -48,11 +48,11 @@
 #   when: has_rbenv is failed
 
 - name:  register path and update bash1
-  shell:  bash -lc "echo export PATH="$HOME/.rbenv/bin:$PATH" >> ~/.bash_profile"
+  shell:  bash -lc "echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bash_profile"
   when: has_rbenv is failed
 
 - name:  register path and update bash2
-  shell:  bash -lc "echo export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH" >> ~/.bash_profile"
+  shell:  bash -lc "echo 'export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"'' >> ~/.bash_profile"
   when: has_rbenv is failed
 
 - name:  register path and update bash3
