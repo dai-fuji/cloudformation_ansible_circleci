@@ -20,8 +20,8 @@
   register: was_cloned_rails
 
 #bundlerがインストールされているか
-- name: check bundler installed
-  shell:  bash -lc "which bundler"
+- name: check bundler 2.3.10 installed
+  shell:  bash -lc "bundler -v| grep 2.3.10"
   register: has_bundler
   changed_when: False
   ignore_errors: yes
