@@ -11,7 +11,7 @@ jobs:
       - checkout
       - aws-cli/setup
       - aws-cloudformation/deploy:
-          template-file-path: /service/infrastructure.yml
+          template-file-path: service/infrastructure.yml
           stack-name: mystack
           extra-arguments:  --no-fail-on-empty-changeset
             
