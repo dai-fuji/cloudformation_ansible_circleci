@@ -1,0 +1,28 @@
+- name: yum update
+  yum:
+    name: '*'
+    state: latest
+  become: yes
+
+- name: install general packages
+  yum:
+    name: 
+      - git
+      - make 
+      - gcc-c++ 
+      - patch 
+      - libyaml-devel 
+      - libffi-devel 
+      - libicu-devel 
+      - zlib-devel 
+      - readline-devel 
+      - libxml2-devel 
+      - libxslt-devel 
+      - ImageMagick 
+      - ImageMagick-devel 
+      - openssl-devel 
+      - libcurl
+      - libcurl-devel
+      - curl
+    state: installed
+  become: yes

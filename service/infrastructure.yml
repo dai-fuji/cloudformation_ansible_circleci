@@ -4,13 +4,14 @@ Resources:
 #-----------------------------------------------------------------------------------------
 # VPC
 #-----------------------------------------------------------------------------------------
-  CfnPracticeVpc1:
+  CfnPracticeVpc:
     Type: AWS::EC2::VPC
     Properties:
       CidrBlock: 10.0.0.0/16
       Tags:
         - Key: Name
-          Value: cfn-vpc1
+          Value: cfn-vpc
+
 #-----------------------------------------------------------------------------------------
 # Subnet public/2groups private/2groups
 #-----------------------------------------------------------------------------------------
@@ -24,16 +25,154 @@ Resources:
       Tags: 
         - Key: Name
           Value: cfn-public-subnet-1
-      VpcId: !Ref CfnPracticeVpc1
+      VpcId: !Ref CfnPracticeVpc
 
   CfnPracticePublicSubnet2:
     Type: AWS::EC2::Subnet
     Properties: 
       AvailabilityZone: !Select #!Selectでリストから選択
-        - 0
+        - 1
         - Fn::GetAZs: !Ref AWS::Region
       CidrBlock: 10.0.11.0/24
       Tags: 
         - Key: Name
           Value: cfn-public-subnet-2
-      VpcId: !Ref CfnPracticeVpc1
+      VpcId: !Ref CfnPracticeVpc
+  
+  CfnPracticePrivateSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties: 
+      AvailabilityZone: !Select #!Selectでリストから選択
+        - 0
+        - Fn::GetAZs: !Ref AWS::Region
+      CidrBlock: 10.0.20.0/24
+      Tags: 
+        - Key: Name
+          Value: cfn-private-subnet-1
+      VpcId: !Ref CfnPracticeVpc
+
+  CfnPracticePrivateSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties: 
+      AvailabilityZone: !Select #!Selectでリストから選択
+        - 1
+        - Fn::GetAZs: !Ref AWS::Region
+      CidrBlock: 10.0.21.0/24
+      Tags: 
+        - Key: Name
+          Value: cfn-private-subnet-2
+      VpcId: !Ref CfnPracticeVpc
+
+#-----------------------------------------------------------------------------------------
+# Internet gateway
+#-----------------------------------------------------------------------------------------
+  CfnInternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+      - Key: Name
+        Value: cfn-internet-gateway
+
+  AttachGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref CfnPracticeVpc
+      InternetGatewayId: !Ref CfnInternetGateway
+
+#-----------------------------------------------------------------------------------------
+# Route table
+#-----------------------------------------------------------------------------------------
+  CfnRouteTable:
+    Type: "AWS::EC2::RouteTable" #ルートテーブルを作成
+    Properties:
+      Tags:
+      - Key: Name
+        Value: cfn-route-table
+      VpcId: !Ref CfnPracticeVpc
+
+  CfnRouteTableAssociation1:
+    Type: "AWS::EC2::SubnetRouteTableAssociation" #ルートテーブルとサブネットを関連付ける
+    Properties:
+      RouteTableId: !Ref CfnRouteTable
+      SubnetId: !Ref CfnPracticePublicSubnet1
+
+  CfnRouteTableAssociation2:
+    Type: "AWS::EC2::SubnetRouteTableAssociation" #ルートテーブルとサブネットを関連付ける
+    Properties:
+      RouteTableId: !Ref CfnRouteTable
+      SubnetId: !Ref CfnPracticePublicSubnet2
+
+  CfnRouteFromInternet:
+    Type: "AWS::EC2::Route" #ルートテーブルの設定をする
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref CfnInternetGateway
+      RouteTableId: !Ref CfnRouteTable
+
+#-----------------------------------------------------------------------------------------
+# Security group
+#-----------------------------------------------------------------------------------------
+  CfnEC2SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: SSH HTTP MySQL access for EC2
+      SecurityGroupIngress: #インバウンドルール
+        - IpProtocol: tcp #SSH
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp #HTTP
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp #Rails
+          FromPort: 3000
+          ToPort: 3000
+          CidrIp: 0.0.0.0/0
+      Tags:
+      - Key: Name
+        Value: cfn-security-group-EC2
+      VpcId: !Ref CfnPracticeVpc
+
+  CfnRDSSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: MySQL access for RDS
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 3306
+          ToPort: 3306
+          CidrIp: 0.0.0.0/0
+      Tags:
+      - Key: Name
+        Value: cfn-security-group-RDS
+      VpcId: !Ref CfnPracticeVpc
+
+#-----------------------------------------------------------------------------------------
+# EC2
+#-----------------------------------------------------------------------------------------
+  CfnRailsEC2Instance:
+    Type: AWS::EC2::Instance
+    Properties: 
+      AvailabilityZone: !Select #!Selectでリストから選択
+        - 0
+        - Fn::GetAZs: !Ref AWS::Region
+      ImageId: ami-03d79d440297083e3
+      InstanceType: t2.micro
+      KeyName: cfn-key
+      NetworkInterfaces: 
+        - AssociatePublicIpAddress: true
+          Description: attached security group for EC2
+          DeviceIndex: 0
+          GroupSet: 
+            - !Ref CfnEC2SecurityGroup
+          SubnetId: !Ref CfnPracticePublicSubnet1
+      Tags: 
+        - Key: Name
+          Value: cfn-rails-ec2-instance
+
+  CfnEIP:
+    Type: AWS::EC2::EIPAssociation
+    Properties: 
+      InstanceId: !Ref CfnRailsEC2Instance
+      EIP: 35.78.146.159
