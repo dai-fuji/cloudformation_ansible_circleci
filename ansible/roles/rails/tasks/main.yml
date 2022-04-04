@@ -55,7 +55,7 @@
   when: not was_cloned_rails.stat.exists
 
 - name: ooooooo
-  shell: bash -lc "gem install bundler"
+  shell: bash -lc "gem update bundler"
   args:
     chdir: "{{ app_root_dir }}"
   when: has_bundler is failed
