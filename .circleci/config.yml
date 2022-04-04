@@ -13,7 +13,7 @@ jobs:
       - aws-cloudformation/deploy:
           template-file-path: /service/infrastructure.yml
           stack-name: mystack
-          extra-arguments:  --no-fail-on-empty-changeses
+          extra-arguments:  --no-fail-on-empty-changeset
             
   execute-ansible-playbook:
     executor: ansible-playbook/default
