@@ -1,38 +1,22 @@
 version: 2.1
 orbs:
   aws-cli:  circleci/aws-cli@2.0
+  aws-cloudformation: orbss/aws-cloudformation@0.1.6
   ansible-playbook: orbss/ansible-playbook@0.0.5
 
 jobs:
-  create-stack:
+  provisioning-stack:
     executor: aws-cli/default
     steps:
       - checkout
       - aws-cli/setup
       - run:
-          name: "create stack"
-          command:  |
-            set +e 
-            aws cloudformation list-stacks --stack-status-filter UPDATE_COMPLETE | grep mystack
-            if [ $? -eq 0 ];  then
-              aws cloudformation update-stack \
-              --stack-name mystack \
-              --template-body file://service/infrastructure.yml
-              if [ $? -ne 0 ]; then
-                exit 0
-              fi
-              aws cloudformation wait stack-update-complete \
-              --stack-name mystack
-            else
-              aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE | grep mystack
-              if [ $? -ne 0 ];  then
-                aws cloudformation create-stack \
-                --stack-name mystack \
-                --template-body file://service/infrastructure.yml
-                aws cloudformation wait stack-create-complete \
-                --stack-name mystack
-              fi
-            fi
+          name: "template validate"
+          command: aws cloudformation validate-template --template-body file://service/infrastructure.yml
+      - aws-cloudformation/deploy:
+          template-file-path: service/infrastructure.yml
+          stack-name: mystack
+          extra-arguments:  --no-fail-on-empty-changeset
             
   execute-ansible-playbook:
     executor: ansible-playbook/default
@@ -47,11 +31,13 @@ jobs:
           private-key: ANSIBLE_SSH_KEY
 
 workflows:
+  version:  2
   provisioning-deploy:
     jobs:
-      - create-stack
+      - provisioning-stack
       - execute-ansible-playbook:
           requires:
-            - create-stack
+            - provisioning-stack
+
 
 
