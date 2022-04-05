@@ -5,7 +5,7 @@ orbs:
   ansible-playbook: orbss/ansible-playbook@0.0.5
 
 jobs:
-  create-stack:
+  provisioning-stack:
     executor: aws-cli/default
     steps:
       - checkout
@@ -34,6 +34,10 @@ workflows:
   version:  2
   provisioning-deploy:
     jobs:
-      - create-stack
+      - provisioning-stack
+      - execute-ansible-playbook:
+          requires:
+            - provisioning-stack
+
 
 
