@@ -60,6 +60,9 @@ workflows:
       - execute-ansible-playbook:
           requires:
             - provisioning-stack
+      - execute-servespec:
+          requires:
+            - execute-ansible-playbook
 
 
 
