@@ -37,7 +37,7 @@ jobs:
       - checkout
       - add_ssh_keys:
           fingerprints:
-          - "d4:08:7c:96:21:50:68:30:84:b5:c4:e0:9f:57:12:f2"
+          - "a9:e9:fd:c5:e2:19:ff:71:e6:ab:a3:46:57:01:e7:0e"
       - run: ruby --version
       - run: 
           name: install serverspec
