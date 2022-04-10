@@ -3,7 +3,7 @@ Description: cfn-practice-rds
 Parameters:
   MasterStackName:
     Type: String
-    Default: Please input stack name of master.
+    Default: mystack
     
 #-----------------------------------------------------------------------------------------
 # RDS passsword
