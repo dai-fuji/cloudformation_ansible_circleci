@@ -3,7 +3,7 @@ Description: cfn-practice-ec2
 Parameters:
   MasterStackName:
     Type: String
-    Default: Please input stack name of master.
+    Default: mystack
 Resources: 
 #-----------------------------------------------------------------------------------------
 # EC2
