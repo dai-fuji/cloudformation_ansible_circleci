@@ -29,6 +29,28 @@ jobs:
           playbook: ansible/playbook.yml
           playbook-options: -u ec2-user
           private-key: ANSIBLE_SSH_KEY
+  
+  execute-serverspec:
+    docker:
+      - image: cimg/ruby:3.1.1
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+          - "a9:e9:fd:c5:e2:19:ff:71:e6:ab:a3:46:57:01:e7:0e"
+      - run: ruby --version
+      - run: 
+          name: install serverspec
+          command:  |
+            gem install serverspec;
+            gem install yaml;
+            gem install rake;
+            gem install highline;
+      - run:
+          name: execute test
+          command:  |
+            cd serverspec;
+            rake spec;
 
 workflows:
   version:  2
@@ -38,6 +60,9 @@ workflows:
       - execute-ansible-playbook:
           requires:
             - provisioning-stack
+      - execute-serverspec:
+          requires:
+            - execute-ansible-playbook
 
 
 

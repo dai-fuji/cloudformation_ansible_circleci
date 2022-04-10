@@ -1,0 +1,7 @@
+35.78.146.159:
+  :roles:
+    - app
+    - base
+  :ssh_opts:
+    :user: ec2-user
+    :paranoid: false
