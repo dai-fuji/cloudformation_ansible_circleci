@@ -1,9 +1,5 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: cfn-practice-ec2
-Parameters:
-  MasterStackName:
-    Type: String
-    Default: mystack
 Resources: 
 #-----------------------------------------------------------------------------------------
 # EC2
@@ -23,7 +19,7 @@ Resources:
           DeviceIndex: 0
           GroupSet: 
             - !Ref CfnEC2SecurityGroup
-          SubnetId: {'Fn::ImportValue': !Sub '${MasterStackName}-PublicSubnet1'}
+          SubnetId: {'Fn::ImportValue':-PublicSubnet1'}
       Tags: 
         - Key: Name
           Value: cfn-rails-ec2-instance
@@ -72,7 +68,7 @@ Resources:
       Tags:
       - Key: Name
         Value: cfn-security-group-EC2
-      VpcId: {'Fn::ImportValue': !Sub '${MasterStackName}-VPCID'}
+      VpcId: {'Fn::ImportValue':-VPCID'}
 
 #-----------------------------------------------------------------------------------------
 # ELB
@@ -85,8 +81,8 @@ Resources:
       SecurityGroups: 
         - !Ref CfnEC2SecurityGroup
       Subnets: 
-        - {'Fn::ImportValue': !Sub '${MasterStackName}-PublicSubnet1'}
-        - {'Fn::ImportValue': !Sub '${MasterStackName}-PublicSubnet2'}
+        - {'Fn::ImportValue':-PublicSubnet1'}
+        - {'Fn::ImportValue':-PublicSubnet2'}
       Tags: 
         - Key: Name
           Value: cfn-elb
@@ -115,7 +111,7 @@ Resources:
         - Id: !Ref CfnRailsEC2Instance
       ProtocolVersion: HTTP1
       TargetType: instance
-      VpcId: {'Fn::ImportValue': !Sub '${MasterStackName}-VPCID'}
+      VpcId: {'Fn::ImportValue':-VPCID'}
 
 #-----------------------------------------------------------------------------------------
 # Route53
