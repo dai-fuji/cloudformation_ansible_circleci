@@ -183,6 +183,25 @@ Resources:
       Tags: 
         - Key: Name
           Value: cfn-rails-ec2-instance
+      UserData: 
+        Fn::Base64: | #-xeをつけるとスクリプトの途中でエラーが発生すると停止する。また、echo $?の結果でログにも残すことができる(1=エラー)
+          #!/bin/bash -ex
+          echo -e "\e[31m----- change hostname --------------------------------------\e[m"
+          sed -i 's/^HOSTNAME=[a-zA-Z0-9\.\-]*$/HOSTNAME=CloudFormationPractice/g' /etc/sysconfig/network
+          hostname 'CloudFormationPractice'
+          hostname
+
+          echo -e "\e[31m----- change timezone ---------------------------------------\e[m"
+          cp /usr/share/zoneinfo/Japan /etc/localtime
+          sed -i 's|^ZONE=[a-zA-Z0-9\.\-\"]*$|ZONE="Asia/Tokyo”|g' /etc/sysconfig/clock
+          date
+
+          echo -e "\e[31m----- yum update --------------------------------------------\e[m"
+          yum update -y
+
+          echo -e "\e[31m----- end all -----------------------------------------------\e[m"
+          echo $?
+
   CfnEIP:
     Type: AWS::EC2::EIPAssociation
     Properties: 
@@ -277,7 +296,7 @@ Resources:
       HostedZoneName: learning-fujimoto.com.
       Comment: Zone apex alias targeted to myELB LoadBalancer.
       RecordSets:
-      - Name: practice-learning-fujimoto.com.
+      - Name: learning-fujimoto.com.
         Type: A
         AliasTarget:
           HostedZoneId: !GetAtt 'CfnELB.CanonicalHostedZoneID'

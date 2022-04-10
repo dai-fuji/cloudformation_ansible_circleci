@@ -17,6 +17,7 @@ jobs:
           template-file-path: service/infrastructure.yml
           stack-name: mystack
           extra-arguments:  --no-fail-on-empty-changeset
+      no_output_timeout: 30m
             
   execute-ansible-playbook:
     executor: ansible-playbook/default
