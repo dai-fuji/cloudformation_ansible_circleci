@@ -117,34 +117,34 @@ Outputs:
     Value: !Ref CfnPracticeVpc
     Description: VPCID
     Export:
-      Name: !Sub ${AWS::StackName}-VPCID #スタック名をプレフィックスとすることで、同一のテンプレートで複数のスタックを作成できる
+      Name: VPCID #スタック名をプレフィックスとすることで、同一のテンプレートで複数のスタックを作成できる
 
   AZ:
     Value: !GetAtt 'CfnPracticePrivateSubnet1.AvailabilityZone'
     Description: AZ
     Export:
-      Name: !Sub ${AWS::StackName}-AZ
+      Name: AZ
 
   PublicSubnet1:
     Value: !Ref CfnPracticePublicSubnet1
     Description: public subnet1
     Export:
-      Name: !Sub ${AWS::StackName}-PublicSubnet1
+      Name: PublicSubnet1
 
   PublicSubnet2:
     Value: !Ref CfnPracticePublicSubnet2
     Description: public subnet2
     Export:
-      Name: !Sub ${AWS::StackName}-PublicSubnet2
+      Name: PublicSubnet2
 
   PrivateSubnet1:
     Value: !Ref CfnPracticePrivateSubnet1
     Description: PrivateSubnet1
     Export:
-      Name: !Sub ${AWS::StackName}-PrivateSubnet1
+      Name: PrivateSubnet1
 
   PrivateSubnet2:
     Value: !Ref CfnPracticePrivateSubnet2
     Description: PrivateSubnet2
     Export:
-      Name: !Sub ${AWS::StackName}-PrivateSubnet2
+      Name: PrivateSubnet2
