@@ -1,0 +1,133 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: cfn-practice-ec2
+Parameters:
+  MasterStackName:
+    Type: String
+    Default: Please input stack name of master.
+Resources: 
+#-----------------------------------------------------------------------------------------
+# EC2
+#-----------------------------------------------------------------------------------------
+  CfnRailsEC2Instance:
+    Type: AWS::EC2::Instance
+    Properties: 
+      AvailabilityZone: !Select #!Selectでリストから選択
+        - 0
+        - Fn::GetAZs: !Ref AWS::Region
+      ImageId: ami-03d79d440297083e3
+      InstanceType: t2.micro
+      KeyName: cfn-key
+      NetworkInterfaces: 
+        - AssociatePublicIpAddress: true
+          Description: attached security group for EC2
+          DeviceIndex: 0
+          GroupSet: 
+            - !Ref CfnEC2SecurityGroup
+          SubnetId: {'Fn::ImportValue': !Sub '${MasterStackName}-PublicSubnet1'}
+      Tags: 
+        - Key: Name
+          Value: cfn-rails-ec2-instance
+      UserData: 
+        Fn::Base64: | #-xeをつけるとスクリプトの途中でエラーが発生すると停止する。また、echo $?の結果でログにも残すことができる(1=エラー)
+          #!/bin/bash -ex
+          echo -e "\e[31m----- change hostname --------------------------------------\e[m"
+          sed -i 's/^HOSTNAME=[a-zA-Z0-9\.\-]*$/HOSTNAME=CloudFormationPractice/g' /etc/sysconfig/network
+          hostname 'CloudFormationPractice'
+          hostname
+
+          echo -e "\e[31m----- change timezone ---------------------------------------\e[m"
+          cp /usr/share/zoneinfo/Japan /etc/localtime
+          sed -i 's|^ZONE=[a-zA-Z0-9\.\-\"]*$|ZONE="Asia/Tokyo”|g' /etc/sysconfig/clock
+          date
+
+          echo -e "\e[31m----- yum update --------------------------------------------\e[m"
+          yum update -y
+
+          echo -e "\e[31m----- end all -----------------------------------------------\e[m"
+          echo $?
+
+  CfnEIP:
+    Type: AWS::EC2::EIPAssociation
+    Properties: 
+      InstanceId: !Ref CfnRailsEC2Instance
+      EIP: 35.78.146.159
+  
+  CfnEC2SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: SSH HTTP MySQL access for EC2
+      SecurityGroupIngress: #インバウンドルール
+        - IpProtocol: tcp #SSH
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp #HTTP
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp #Rails
+          FromPort: 3000
+          ToPort: 3000
+          CidrIp: 0.0.0.0/0
+      Tags:
+      - Key: Name
+        Value: cfn-security-group-EC2
+      VpcId: {'Fn::ImportValue': !Sub '${MasterStackName}-VPCID'}
+
+#-----------------------------------------------------------------------------------------
+# ELB
+#-----------------------------------------------------------------------------------------
+  CfnELB:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties: 
+      IpAddressType: ipv4
+      Scheme: internet-facing
+      SecurityGroups: 
+        - !Ref CfnEC2SecurityGroup
+      Subnets: 
+        - {'Fn::ImportValue': !Sub '${MasterStackName}-PublicSubnet1'}
+        - {'Fn::ImportValue': !Sub '${MasterStackName}-PublicSubnet2'}
+      Tags: 
+        - Key: Name
+          Value: cfn-elb
+      Type: application
+
+  CfnELBListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties: 
+      DefaultActions: 
+        - TargetGroupArn: !Ref CfnELBTargetGroup
+          Type: forward
+      LoadBalancerArn: !Ref CfnELB
+      Port: 80
+      Protocol: HTTP
+
+  CfnELBTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties: 
+      Name: String
+      Port: 80
+      Protocol: HTTP
+      Tags: 
+        - Key: Name
+          Value: cfn-elb-target-group
+      Targets: 
+        - Id: !Ref CfnRailsEC2Instance
+      ProtocolVersion: HTTP1
+      TargetType: instance
+      VpcId: {'Fn::ImportValue': !Sub '${MasterStackName}-VPCID'}
+
+#-----------------------------------------------------------------------------------------
+# Route53
+#-----------------------------------------------------------------------------------------
+  CfnDNS:
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      HostedZoneName: learning-fujimoto.com.
+      Comment: Zone apex alias targeted to myELB LoadBalancer.
+      RecordSets:
+      - Name: learning-fujimoto.com.
+        Type: A
+        AliasTarget:
+          HostedZoneId: !GetAtt 'CfnELB.CanonicalHostedZoneID'
+          DNSName: !GetAtt 'CfnELB.DNSName'
