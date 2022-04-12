@@ -24,6 +24,13 @@
     group: ec2-user
     mode: 0664
 
+- name: replace db password in database.yml
+  replace:
+    dest:  "{{ app_root_dir }}/config/database.yml"
+    regexp: 'changebycienv'
+    replace: ${DB_PASSWORD}
+    backup: yes
+
 - name: provide unicorn.rb
   template:
     src: roles/setup_server/templete/unicorn.rb.j2
