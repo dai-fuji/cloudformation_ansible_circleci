@@ -26,7 +26,7 @@ Resources:
       DBName: CfnRDS
       DBSubnetGroupName: !Ref 'CfnRDSSubnetGroup'
       Engine: mysql
-      EngineVersion: 5.7.36
+      EngineVersion: 5.7.37
       MasterUserPassword: !Ref 'DBPassword'
       MasterUsername: admin
       VPCSecurityGroups:
