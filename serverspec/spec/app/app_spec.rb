@@ -15,10 +15,6 @@ describe file('/var/www/rails_app/tmp/sockets/unicorn.sock') do
   it { should be_socket }
 end
 
-describe file('/etc/nginx/conf.d/rails_app.conf') do
-  its(:content) { should match /\/var\/www\/rails_app\/tmp\/sockets\/unicorn\.sock/ }
-end
-
-describe command('curl twitter-demo.learning-fujimoto.com -o /dev/null -w "%{http_code}\n" -s') do
+describe command('curl learning-fujimoto.com -o /dev/null -w "%{http_code}\n" -s') do
   its(:stdout) { should match /^200$/ }
 end

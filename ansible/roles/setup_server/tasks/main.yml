@@ -13,6 +13,11 @@
   changed_when: False
   ignore_errors: yes
 
+- name: has database.yml
+  stat:
+    path: "{{ app_root_dir }}/config/database.yml"
+  register: database_yml
+
 #---------------------------
 # provide setting files
 #---------------------------
@@ -23,13 +28,7 @@
     owner: ec2-user
     group: ec2-user
     mode: 0664
-
-- name: replace db password in database.yml
-  replace:
-    dest:  "{{ app_root_dir }}/config/database.yml"
-    regexp: 'changebycienv'
-    replace: ${DB_PASSWORD}
-    backup: yes
+  when: not database_yml.stat.exists
 
 - name: provide unicorn.rb
   template:
