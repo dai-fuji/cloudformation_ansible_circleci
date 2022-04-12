@@ -5,7 +5,7 @@
     app_root_dir: /var/www/rails_app
     ruby_version: 2.6.3
     node_version: 16
-    bundler:  2.3.10
+    bundler_version:  2.3.11
     my_app_repo:  https://github.com/dai-fuji/rails_practice.git
 
   roles:
