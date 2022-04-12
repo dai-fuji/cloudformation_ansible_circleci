@@ -41,9 +41,10 @@ jobs:
       - ansible-playbook/install:
           version: 2.8.20
       - ansible-playbook/playbook:
+          inventory:  ANSIBLE_INVENTORY
           playbook: ansible/playbook.yml
           private-key: ANSIBLE_SSH_KEY
-          playbook-options: "-i ansible/inventory -u ec2-user"
+          playbook-options: -u ec2-user"
 
   execute-serverspec:
     docker:
