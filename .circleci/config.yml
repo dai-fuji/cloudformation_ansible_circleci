@@ -44,7 +44,7 @@ jobs:
           inventory:  ANSIBLE_INVENTORY
           playbook: ansible/playbook.yml
           private-key: ANSIBLE_SSH_KEY
-          playbook-options: -u ec2-user"
+          playbook-options: -u ec2-user
 
   execute-serverspec:
     docker:
