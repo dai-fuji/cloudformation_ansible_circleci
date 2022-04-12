@@ -28,7 +28,7 @@ jobs:
       - aws-cloudformation/deploy:
           template-file-path: service/rds.yml
           stack-name: mystack-rds
-          extra-arguments:  --no-fail-on-empty-changeset
+          extra-arguments:  --no-fail-on-empty-changeset --parameters ParameterKey=DBPassword,ParameterValue=${DB_PASSWORD}
       - aws-cloudformation/deploy:
           template-file-path: service/s3.yml
           stack-name: mystack-s3
@@ -54,7 +54,6 @@ jobs:
       - add_ssh_keys:
           fingerprints:
           - "2c:b2:97:c3:fd:d4:fc:50:ca:6a:5f:09:51:ac:73:65"
-      - run: ruby --version
       - run: 
           name: install serverspec
           command:  |

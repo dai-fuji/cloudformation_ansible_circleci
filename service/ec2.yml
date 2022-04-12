@@ -12,7 +12,7 @@ Resources:
         - Fn::GetAZs: !Ref AWS::Region
       ImageId: ami-03d79d440297083e3
       InstanceType: t2.micro
-      KeyName: cfn-key
+      KeyName: circleci_practice
       NetworkInterfaces: 
         - AssociatePublicIpAddress: true
           Description: attached security group for EC2

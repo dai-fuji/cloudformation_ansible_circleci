@@ -10,7 +10,6 @@ Parameters:
     MinLength: 8
     MaxLength: 41
     AllowedPattern: "[a-zA-Z0-9]*"
-    Default: 1234password4321
     ConstraintDescription: "make sure input correct password again"
 
 Resources:
