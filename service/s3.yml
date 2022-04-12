@@ -1,0 +1,10 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: cfn-practice-s3
+Resources: 
+#-----------------------------------------------------------------------------------------
+# S3
+#-----------------------------------------------------------------------------------------
+  CfnS3:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: forsaveimage
