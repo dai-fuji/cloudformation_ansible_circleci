@@ -21,7 +21,7 @@
 
 #bundlerがインストールされているか
 - name: check bundler 2.3.11 installed 1
-  shell:  bash -lc "bundler -v| grep {{bundler_version}}"
+  shell:  bash -lc "bundler -v| grep {{ bundler_version }}"
   register: has_bundler_1
   changed_when: False
   ignore_errors: yes
@@ -55,7 +55,7 @@
   when: not was_cloned_rails.stat.exists
 
 - name: update bundler
-  shell:  bash -lc "gem install bundler -v {{bundler_version}}"
+  shell:  bash -lc "gem install bundler -v {{ bundler_version }}"
   args:
     chdir:  "{{ app_root_dir }}"
   when: has_bundler_1 is failed
