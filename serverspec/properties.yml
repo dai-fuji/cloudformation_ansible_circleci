@@ -5,3 +5,10 @@
   :ssh_opts:
     :user: ec2-user
     :paranoid: false
+13.112.38.53:
+  :roles:
+    - app
+    - base
+  :ssh_opts:
+    :user: ec2-user
+    :paranoid: false
