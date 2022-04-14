@@ -76,3 +76,167 @@ playbook.ymlのvars以下に変数名と値を記述することでジョブの�
 `$ ansible-playbook -i inventoryファイルパス playbookファイルパス (--オプション)　`   
 `--check` : ドライラン（対象ホストに変更を加えない状態での実行）  
 `--syntax-check`：構文チェック
+<br>
+<br>
+
+## 実行結果
+***
+```
+PLAY [all] *********************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [35.78.146.159]
+ok: [13.112.38.53]
+
+TASK [general : yum update] ****************************************************
+ok: [13.112.38.53]
+ok: [35.78.146.159]
+
+TASK [general : install general packages] **************************************
+ok: [13.112.38.53]
+ok: [35.78.146.159]
+
+TASK [node_yarn : check if nodejs already installed] ***************************
+ok: [13.112.38.53]
+ok: [35.78.146.159]
+
+TASK [node_yarn : add repository for nodejs] ***********************************
+changed: [35.78.146.159]
+changed: [13.112.38.53]
+
+TASK [node_yarn : install nodejs] **********************************************
+ok: [35.78.146.159]
+ok: [13.112.38.53]
+
+TASK [node_yarn : install yarn] ************************************************
+ok: [13.112.38.53]
+ok: [35.78.146.159]
+
+TASK [ruby : check was rbenv already installed] ********************************
+ok: [13.112.38.53]
+ok: [35.78.146.159]
+
+TASK [ruby : check was ruby-build already installed] ***************************
+ok: [35.78.146.159]
+ok: [13.112.38.53]
+
+TASK [ruby : check was ruby-version already installed] *************************
+ok: [35.78.146.159]
+ok: [13.112.38.53]
+
+TASK [ruby : install rbenv] ****************************************************
+skipping: [35.78.146.159]
+skipping: [13.112.38.53]
+
+TASK [ruby : install ruby-build] ***********************************************
+skipping: [35.78.146.159]
+skipping: [13.112.38.53]
+
+TASK [ruby : register path and update bash] ************************************
+skipping: [35.78.146.159]
+skipping: [13.112.38.53]
+
+TASK [ruby : ruby install] *****************************************************
+skipping: [35.78.146.159]
+skipping: [13.112.38.53]
+
+TASK [ruby : ruby set global] **************************************************
+skipping: [35.78.146.159]
+skipping: [13.112.38.53]
+
+TASK [rails : check has directory var/www] *************************************
+ok: [35.78.146.159]
+ok: [13.112.38.53]
+
+TASK [rails : check has Gemfile] ***********************************************
+ok: [35.78.146.159]
+ok: [13.112.38.53]
+
+TASK [rails : check has directory rails-app] ***********************************
+ok: [35.78.146.159]
+ok: [13.112.38.53]
+
+TASK [rails : check bundler 2.3.11 installed 1] ********************************
+ok: [35.78.146.159]
+ok: [13.112.38.53]
+
+TASK [rails : install mysql] ***************************************************
+ok: [35.78.146.159]
+ok: [13.112.38.53]
+
+TASK [rails : create dir for rails-app] ****************************************
+skipping: [35.78.146.159]
+skipping: [13.112.38.53]
+
+TASK [rails : clone rails-app] *************************************************
+skipping: [35.78.146.159]
+skipping: [13.112.38.53]
+
+TASK [rails : update bundler] **************************************************
+skipping: [35.78.146.159]
+skipping: [13.112.38.53]
+
+TASK [rails : check bundler 2.3.11 installed 2] ********************************
+ok: [35.78.146.159]
+ok: [13.112.38.53]
+
+TASK [rails : install gems] ****************************************************
+changed: [13.112.38.53]
+changed: [35.78.146.159]
+
+TASK [rails : install webpacker] ***********************************************
+changed: [13.112.38.53]
+changed: [35.78.146.159]
+
+TASK [nginx : ckeck installed nginx] *******************************************
+ok: [35.78.146.159]
+ok: [13.112.38.53]
+
+TASK [nginx : install nginx] ***************************************************
+skipping: [35.78.146.159]
+skipping: [13.112.38.53]
+
+TASK [setup_server : is running unicorn] ***************************************
+ok: [35.78.146.159]
+ok: [13.112.38.53]
+
+TASK [setup_server : is running nginx] *****************************************
+ok: [35.78.146.159]
+ok: [13.112.38.53]
+
+TASK [setup_server : has database.yml] *****************************************
+ok: [35.78.146.159]
+ok: [13.112.38.53]
+
+TASK [setup_server : provide database.yml] *************************************
+skipping: [35.78.146.159]
+skipping: [13.112.38.53]
+
+TASK [setup_server : provide unicorn.rb] ***************************************
+ok: [35.78.146.159]
+ok: [13.112.38.53]
+
+TASK [setup_server : provide unicorn.rake] *************************************
+ok: [35.78.146.159]
+ok: [13.112.38.53]
+
+TASK [setup_server : create dir for unicorn.sock] ******************************
+ok: [35.78.146.159]
+ok: [13.112.38.53]
+
+TASK [setup_server : provide rails.conf] ***************************************
+ok: [13.112.38.53]
+ok: [35.78.146.159]
+
+TASK [setup_server : start unicorn] ********************************************
+skipping: [35.78.146.159]
+skipping: [13.112.38.53]
+
+TASK [setup_server : start nginx] **********************************************
+skipping: [35.78.146.159]
+skipping: [13.112.38.53]
+
+PLAY RECAP *********************************************************************
+13.112.38.53               : ok=26   changed=3    unreachable=0    failed=0    skipped=12   rescued=0    ignored=0   
+35.78.146.159              : ok=26   changed=3    unreachable=0    failed=0    skipped=12   rescued=0    ignored=0 
+```

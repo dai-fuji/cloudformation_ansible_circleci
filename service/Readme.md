@@ -5,7 +5,7 @@ OSレイヤーの各種設定状態をサーバー内部から確認する。RSp
 
 ## 構成図
 ***
-![構成図](../image/../../image/infrastructure_diagram.jpg)
+![構成図](./image/../../image/infrastructure_diagram.jpg)
 <br>
 <br>
 

@@ -11,7 +11,8 @@ AWSの環境構築からRailsアプリケーションのデプロイとテスト
 
 ## Overview
 ***
-![全体図](/image/circleci_overview.jpg)
+![全体図](./image/circleci_overview.jpg)    
+![実行結果](./image/result.png)
 <br>
 <br>
 
