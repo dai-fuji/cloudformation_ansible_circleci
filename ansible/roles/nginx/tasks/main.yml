@@ -14,4 +14,3 @@
   shell: bash -lc "amazon-linux-extras install -y nginx1"
   become: yes
   when: has_nginx is failed
-

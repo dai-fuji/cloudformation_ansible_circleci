@@ -13,24 +13,24 @@ jobs:
       - run:
           name: "template validate"
           command: |
-            aws cloudformation validate-template --template-body file://service/vpc.yml;
-            aws cloudformation validate-template --template-body file://service/ec2.yml;
-            aws cloudformation validate-template --template-body file://service/rds.yml;
-            aws cloudformation validate-template --template-body file://service/s3.yml;
+            aws cloudformation validate-template --template-body file://cloudformation/vpc.yml;
+            aws cloudformation validate-template --template-body file://cloudformation/ec2.yml;
+            aws cloudformation validate-template --template-body file://cloudformation/rds.yml;
+            aws cloudformation validate-template --template-body file://cloudformation/s3.yml;
       - aws-cloudformation/deploy:
-          template-file-path: service/vpc.yml
+          template-file-path: cloudformation/vpc.yml
           stack-name: mystack-vpc
           extra-arguments:  --no-fail-on-empty-changeset
       - aws-cloudformation/deploy:
-          template-file-path: service/ec2.yml
+          template-file-path: cloudformation/ec2.yml
           stack-name: mystack-ec2
           extra-arguments:  --no-fail-on-empty-changeset
       - aws-cloudformation/deploy:
-          template-file-path: service/rds.yml
+          template-file-path: cloudformation/rds.yml
           stack-name: mystack-rds
           extra-arguments:  --no-fail-on-empty-changeset --parameter-overrides DBPassword=${DB_PASSWORD}
       - aws-cloudformation/deploy:
-          template-file-path: service/s3.yml
+          template-file-path: cloudformation/s3.yml
           stack-name: mystack-s3
           extra-arguments:  --no-fail-on-empty-changeset
             
@@ -44,7 +44,7 @@ jobs:
           inventory:  ANSIBLE_INVENTORY
           playbook: ansible/playbook.yml
           private-key: ANSIBLE_SSH_KEY
-          playbook-options: -u ec2-user
+          playbook-options: -u ec2-user --vault-password-file=ansible/vault_pass
 
   execute-serverspec:
     docker:
@@ -78,6 +78,3 @@ workflows:
       - execute-serverspec:
           requires:
             - execute-ansible-playbook
-
-
-
