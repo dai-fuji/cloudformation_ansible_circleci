@@ -8,6 +8,8 @@
     bundler_version:  2.3.11
     my_app_repo:  https://github.com/dai-fuji/rails_practice.git
     domain: learning-fujimoto.com
+  vars_files:
+    - private.yml
 
   roles:
     - general
