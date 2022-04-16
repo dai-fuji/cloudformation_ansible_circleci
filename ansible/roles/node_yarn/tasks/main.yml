@@ -22,4 +22,3 @@
     global: yes
   become: yes
   when: not nodejs_bin.stat.exists
-
