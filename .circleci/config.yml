@@ -28,7 +28,7 @@ jobs:
       - aws-cloudformation/deploy:
           template-file-path: cloudformation/rds.yml
           stack-name: mystack-rds
-          extra-arguments:  --no-fail-on-empty-changeset --parameter-overrides DBPassword=${DB_PASSWORD}
+          extra-arguments:  --no-fail-on-empty-changeset --parameter-overrides DBPassword=${DB_PASSWORD} DBDNS=${DB_DNS}
       - aws-cloudformation/deploy:
           template-file-path: cloudformation/s3.yml
           stack-name: mystack-s3
