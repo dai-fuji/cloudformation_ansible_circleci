@@ -13,23 +13,9 @@
   changed_when: False
   ignore_errors: yes
 
-- name: has database.yml
-  stat:
-    path: "{{ app_root_dir }}/config/database.yml"
-  register: database_yml
-
 #---------------------------
 # provide setting files
 #---------------------------
-- name: provide database.yml
-  template:
-    src: roles/setup_server/templete/database.yml.j2
-    dest: "{{ app_root_dir }}/config/database.yml"
-    owner: ec2-user
-    group: ec2-user
-    mode: 0664
-  when: not database_yml.stat.exists
-
 - name: provide unicorn.rb
   template:
     src: roles/setup_server/templete/unicorn.rb.j2

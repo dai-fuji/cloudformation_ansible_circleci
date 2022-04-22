@@ -54,6 +54,29 @@
     dest: "{{ app_root_dir }}"
   when: not was_cloned_rails.stat.exists
 
+
+#---------------------------
+# check has database.yml and proide
+#---------------------------
+
+- name: check has database.yml
+  stat:
+    path: "{{ app_root_dir }}/config/database.yml"
+  register: database_yml
+
+- name: provide database.yml
+  template:
+    src: roles/setup_server/templete/database.yml.j2
+    dest: "{{ app_root_dir }}/config/database.yml"
+    owner: ec2-user
+    group: ec2-user
+    mode: 0664
+  when: not database_yml.stat.exists
+
+#---------------------------
+# install
+#---------------------------
+
 - name: update bundler
   shell:  bash -lc "gem install bundler -v {{ bundler_version }}"
   args:
