@@ -66,7 +66,7 @@
 
 - name: provide database.yml
   template:
-    src: roles/setup_server/templete/database.yml.j2
+    src: roles/rails/templete/database.yml.j2
     dest: "{{ app_root_dir }}/config/database.yml"
     owner: ec2-user
     group: ec2-user
