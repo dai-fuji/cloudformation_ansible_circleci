@@ -54,3 +54,29 @@ Resources:
       - Key: Name
         Value: cfn-security-group-RDS
       VpcId: !ImportValue VPCID
+
+#-----------------------------------------------------------------------------------------
+# Route53
+#-----------------------------------------------------------------------------------------
+  DNS: 
+    Type: "AWS::Route53::HostedZone"
+    Properties: 
+      HostedZoneConfig: 
+        Comment: 'My hosted zone for example.com'
+      Name: 'rds.endpoint'
+      VPCs: 
+        - 
+          VPCId: !ImportValue VPCID
+          VPCRegion: !Ref AWS::Region
+
+  RDSDNS:
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      Comment: Creating records for mail server
+      HostedZoneId: !Ref DNS
+      RecordSets:
+      - Name: db01.
+        ResourceRecords: 
+        - !GetAtt 'CfnRDSInstance.Endpoint.Address'
+        TTL: '600'
+        Type: CNAME
