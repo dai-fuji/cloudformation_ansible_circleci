@@ -75,7 +75,7 @@ Resources:
       Comment: Creating records for mail server
       HostedZoneId: !Ref DNS
       RecordSets:
-      - Name: db01.
+      - Name: 'db01'
         ResourceRecords: 
         - !GetAtt 'CfnRDSInstance.Endpoint.Address'
         TTL: '600'
