@@ -12,6 +12,13 @@ Parameters:
     AllowedPattern: "[a-zA-Z0-9]*"
     ConstraintDescription: "make sure input correct password again"
 
+  DBDNS:
+    NoEcho: false
+    Type: String
+    MinLength: 2
+    MaxLength: 40
+    AllowedPattern: "[a-zA-Z0-9.]*"
+
 Resources:
 #-----------------------------------------------------------------------------------------
 # RDS
@@ -54,3 +61,29 @@ Resources:
       - Key: Name
         Value: cfn-security-group-RDS
       VpcId: !ImportValue VPCID
+
+#-----------------------------------------------------------------------------------------
+# Route53
+#-----------------------------------------------------------------------------------------
+  DNS: 
+    Type: "AWS::Route53::HostedZone"
+    Properties: 
+      HostedZoneConfig: 
+        Comment: 'Hosted zone for rds'
+      Name: 'rds.endpoint'
+      VPCs: 
+        - 
+          VPCId: !ImportValue VPCID
+          VPCRegion: !Ref AWS::Region
+
+  RDSDNS:
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      Comment: Creating records for rds
+      HostedZoneId: !Ref DNS
+      RecordSets:
+      - Name: !Ref 'DBDNS'
+        ResourceRecords: 
+        - !GetAtt 'CfnRDSInstance.Endpoint.Address'
+        TTL: '600'
+        Type: CNAME

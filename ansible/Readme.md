@@ -73,9 +73,11 @@ playbook.ymlのvars以下に変数名と値を記述することでジョブの�
 その際はssh_configファイルを作成し、対象のホスト情報と秘密鍵を指定する。
 
 - コマンド  
-`$ ansible-playbook -i inventoryファイルパス playbookファイルパス (--オプション)　`   
-`--check` : ドライラン（対象ホストに変更を加えない状態での実行）  
-`--syntax-check`：構文チェック
+  - `$ ansible-playbook -i inventoryファイルパス playbookファイルパス (--オプション)　`   
+  - `--check` : ドライラン（対象ホストに変更を加えない状態での実行）  
+  - `--syntax-check`：構文チェック
+  - `--vault-password-file=パスワードを記述したファイルのパス`：ansible-vaultで暗号化されたファイルを復号化して使用
+  - [Ansible-vault公式ドキュメントリンク](https://docs.ansible.com/ansible/2.9_ja/user_guide/vault.html)
 <br>
 <br>
 

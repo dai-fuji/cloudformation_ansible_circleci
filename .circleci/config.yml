@@ -28,7 +28,7 @@ jobs:
       - aws-cloudformation/deploy:
           template-file-path: cloudformation/rds.yml
           stack-name: mystack-rds
-          extra-arguments:  --no-fail-on-empty-changeset --parameter-overrides DBPassword=${DB_PASSWORD}
+          extra-arguments:  --no-fail-on-empty-changeset --parameter-overrides DBPassword=${DB_PASSWORD} DBDNS=${DB_DNS}
       - aws-cloudformation/deploy:
           template-file-path: cloudformation/s3.yml
           stack-name: mystack-s3
@@ -38,13 +38,17 @@ jobs:
     executor: ansible-playbook/default
     steps:
       - checkout
+      - run:
+          namme:  provide vault pass
+          command: |
+            echo "${VAULT_PASSWORD}" > ansible/vault_pass.txt;
       - ansible-playbook/install:
           version: 2.8.20
       - ansible-playbook/playbook:
           inventory:  ANSIBLE_INVENTORY
           playbook: ansible/playbook.yml
           private-key: ANSIBLE_SSH_KEY
-          playbook-options: -u ec2-user --vault-password-file=ansible/vault_pass
+          playbook-options: -u ec2-user --vault-password-file=ansible/vault_pass.txt
 
   execute-serverspec:
     docker:

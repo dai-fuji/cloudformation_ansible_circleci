@@ -8,6 +8,8 @@ Resources:
     Type: AWS::EC2::VPC
     Properties:
       CidrBlock: 10.0.0.0/16
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
       Tags:
         - Key: Name
           Value: cfn-vpc
@@ -117,7 +119,7 @@ Outputs:
     Value: !Ref CfnPracticeVpc
     Description: VPCID
     Export:
-      Name: VPCID #スタック名をプレフィックスとすることで、同一のテンプレートで複数のスタックを作成できる
+      Name: VPCID
 
   AZ:
     Value: !GetAtt 'CfnPracticePrivateSubnet1.AvailabilityZone'
