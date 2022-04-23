@@ -39,6 +39,8 @@ CircleCIのProject SettingsのEnvironment Variablesに以下の変数を登録�
 - AWS_DEFAULT_REGION
 - AWS_SECRET_ACCESS_KEY
 - DB_PASSWORD
+- DB_DNS
+- VAULT_PASSWORD
 <br>
 <br>
 
@@ -51,20 +53,10 @@ CircleCIのProject SettingsのSSH keysに以下のホストに紐づく秘密鍵
 <br>
 <br>
 
-## 手動実行するタスク
+## DBの秘匿情報のハンドリング
 ***
-機密性を維持する為、database.ymlに記述するDBパスワードはSSHでEC2に接続して編集。  
-```yaml:database.yml
-/var/www/rails_app/database.yml  
-~~~略~~~
-user:admin
-password:xxxxxxxxx
-host: zzzzzzzzzzzzzzzzzzzz
-~~~略~~~
-```
-xxxxxxxxxxをCircleCiの環境変数「DB_PASSWORD」に設定した値に変更する。   
-zzzzzzzzzzをDBインスタンスのエンドポイントに変更する。
-編集後はnginxとunicornを再起動が必要。
+database.ymlのpasswordとhost情報を下図のようにして機密性を確保しています。
+![秘匿情報のハンドリング](../image/秘匿情報のハンドリング.jpg)  
 <br>
 <br>
 
