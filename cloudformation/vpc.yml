@@ -1,0 +1,152 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: cfn-practice
+Resources: 
+#-----------------------------------------------------------------------------------------
+# VPC
+#-----------------------------------------------------------------------------------------
+  CfnPracticeVpc:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      Tags:
+        - Key: Name
+          Value: cfn-vpc
+
+#-----------------------------------------------------------------------------------------
+# Subnet public/2groups private/2groups
+#-----------------------------------------------------------------------------------------
+  CfnPracticePublicSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties: 
+      AvailabilityZone: !Select #!Selectでリストから選択
+        - 0
+        - Fn::GetAZs: !Ref AWS::Region
+      CidrBlock: 10.0.10.0/24
+      Tags: 
+        - Key: Name
+          Value: cfn-public-subnet-1
+      VpcId: !Ref CfnPracticeVpc
+
+  CfnPracticePublicSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties: 
+      AvailabilityZone: !Select #!Selectでリストから選択
+        - 1
+        - Fn::GetAZs: !Ref AWS::Region
+      CidrBlock: 10.0.11.0/24
+      Tags: 
+        - Key: Name
+          Value: cfn-public-subnet-2
+      VpcId: !Ref CfnPracticeVpc
+  
+  CfnPracticePrivateSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties: 
+      AvailabilityZone: !Select #!Selectでリストから選択
+        - 0
+        - Fn::GetAZs: !Ref AWS::Region
+      CidrBlock: 10.0.20.0/24
+      Tags: 
+        - Key: Name
+          Value: cfn-private-subnet-1
+      VpcId: !Ref CfnPracticeVpc
+
+  CfnPracticePrivateSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties: 
+      AvailabilityZone: !Select #!Selectでリストから選択
+        - 1
+        - Fn::GetAZs: !Ref AWS::Region
+      CidrBlock: 10.0.21.0/24
+      Tags: 
+        - Key: Name
+          Value: cfn-private-subnet-2
+      VpcId: !Ref CfnPracticeVpc
+
+#-----------------------------------------------------------------------------------------
+# Internet gateway
+#-----------------------------------------------------------------------------------------
+  CfnInternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+      - Key: Name
+        Value: cfn-internet-gateway
+
+  AttachGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref CfnPracticeVpc
+      InternetGatewayId: !Ref CfnInternetGateway
+
+#-----------------------------------------------------------------------------------------
+# Route table
+#-----------------------------------------------------------------------------------------
+  CfnRouteTable:
+    Type: "AWS::EC2::RouteTable" #ルートテーブルを作成
+    Properties:
+      Tags:
+      - Key: Name
+        Value: cfn-route-table
+      VpcId: !Ref CfnPracticeVpc
+
+  CfnRouteTableAssociation1:
+    Type: "AWS::EC2::SubnetRouteTableAssociation" #ルートテーブルとサブネットを関連付ける
+    Properties:
+      RouteTableId: !Ref CfnRouteTable
+      SubnetId: !Ref CfnPracticePublicSubnet1
+
+  CfnRouteTableAssociation2:
+    Type: "AWS::EC2::SubnetRouteTableAssociation" #ルートテーブルとサブネットを関連付ける
+    Properties:
+      RouteTableId: !Ref CfnRouteTable
+      SubnetId: !Ref CfnPracticePublicSubnet2
+
+  CfnRouteFromInternet:
+    Type: "AWS::EC2::Route" #ルートテーブルの設定をする
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref CfnInternetGateway
+      RouteTableId: !Ref CfnRouteTable
+
+#-----------------------------------------------------------------------------------------
+# Outputs
+#-----------------------------------------------------------------------------------------
+Outputs:
+  VPCId:
+    Value: !Ref CfnPracticeVpc
+    Description: VPCID
+    Export:
+      Name: VPCID
+
+  AZ:
+    Value: !GetAtt 'CfnPracticePrivateSubnet1.AvailabilityZone'
+    Description: AZ
+    Export:
+      Name: AZ
+
+  PublicSubnet1:
+    Value: !Ref CfnPracticePublicSubnet1
+    Description: public subnet1
+    Export:
+      Name: PublicSubnet1
+
+  PublicSubnet2:
+    Value: !Ref CfnPracticePublicSubnet2
+    Description: public subnet2
+    Export:
+      Name: PublicSubnet2
+
+  PrivateSubnet1:
+    Value: !Ref CfnPracticePrivateSubnet1
+    Description: PrivateSubnet1
+    Export:
+      Name: PrivateSubnet1
+
+  PrivateSubnet2:
+    Value: !Ref CfnPracticePrivateSubnet2
+    Description: PrivateSubnet2
+    Export:
+      Name: PrivateSubnet2

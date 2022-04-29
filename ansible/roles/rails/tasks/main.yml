@@ -1,0 +1,100 @@
+#---------------------------
+# check status
+#---------------------------
+
+#ディレクトリが存在するか
+- name: check has directory var/www
+  stat:
+    path: "{{ app_root_dir }}"
+  register: has_directory_srv
+
+- name: check has Gemfile
+  stat:
+    path: "{{ app_root_dir }}/Gemfile"
+  register: has_directory_gemfile
+
+#クローンされているか
+- name: check has directory rails-app
+  stat:
+    path: "{{ app_root_dir }}/app"
+  register: was_cloned_rails
+
+#bundlerがインストールされているか
+- name: check bundler 2.3.11 installed 1
+  shell:  bash -lc "bundler -v| grep {{ bundler_version }}"
+  register: has_bundler_1
+  changed_when: False
+  ignore_errors: yes
+
+#---------------------------
+# install
+#---------------------------
+
+- name: install mysql
+  yum:
+    name:
+      - mysql
+      - mysql-devel
+    state:  installed
+  become: yes
+
+- name: create dir for rails-app
+  file:
+    path: "{{ app_root_dir }}"
+    state: directory
+    owner: ec2-user
+    group: ec2-user
+    mode: 0775
+  become: yes
+  when: not has_directory_srv.stat.exists
+
+- name: clone rails-app
+  git:
+    repo: https://github.com/dai-fuji/rails_practice.git
+    dest: "{{ app_root_dir }}"
+  when: not was_cloned_rails.stat.exists
+
+
+#---------------------------
+# check has database.yml and proide
+#---------------------------
+
+- name: check has database.yml
+  stat:
+    path: "{{ app_root_dir }}/config/database.yml"
+  register: database_yml
+
+- name: provide database.yml
+  template:
+    src: roles/rails/templete/database.yml.j2
+    dest: "{{ app_root_dir }}/config/database.yml"
+    owner: ec2-user
+    group: ec2-user
+    mode: 0664
+  when: not database_yml.stat.exists
+
+#---------------------------
+# install
+#---------------------------
+
+- name: update bundler
+  shell:  bash -lc "gem install bundler -v {{ bundler_version }}"
+  args:
+    chdir:  "{{ app_root_dir }}"
+  when: has_bundler_1 is failed
+
+- name: check bundler 2.3.11 installed 2
+  shell:  bash -lc "bundler -v | grep {{bundler_version}}"
+  changed_when: False
+
+- name: install gems
+  shell:  bash -lc "bundle install"
+  args:
+    chdir: "{{ app_root_dir }}"
+  when: not was_cloned_rails.stat.exists or has_directory_gemfile.stat.exists
+
+- name: install webpacker
+  shell: bash -lc "bundle exec rails webpacker:install"
+  args:
+    chdir: "{{ app_root_dir }}"
+  when: not was_cloned_rails.stat.exists or has_directory_gemfile.stat.exists

@@ -1,0 +1,34 @@
+$worker = 2
+$timeout = 30
+$app_root = '{{ app_root_dir }}/'
+$listen = '{{ app_root_dir }}/tmp/sockets/unicorn.sock'
+$pid = '{{ app_root_dir }}/tmp/pids/unicorn.pid'
+$std_log = '{{ app_root_dir }}/log/unicorn.log'
+
+puts $app_root
+puts $listen
+
+worker_processes $worker
+working_directory $app_root
+stderr_path $std_log
+stdout_path $std_log
+timeout $timeout
+listen $listen
+pid $pid
+
+preload_app true
+
+#before_fork do |server, worker|
+#　defined?(ActiveRecord::Base) and ActiveRecord::Base.connection.disconnect!
+#　old_pid = "#{server.config[:pid]}.oldbin"
+#　if old_pid != server.pid
+#　　begin
+#　　　Process.kill "QUIT", File.read(old_pid).to_i
+#　　rescue Errno::ENOENT, Errno::ESRCH
+#　　end
+#　end
+#end
+
+#after_fork do |server, worker|
+#　defined?(ActiveRecord::Base) and ActiveRecord::Base.establish_connection
+#end

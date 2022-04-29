@@ -1,0 +1,16 @@
+#---------------------------
+# check status
+#---------------------------
+- name: ckeck installed nginx
+  shell:  bash -lc "nginx -v"
+  register: has_nginx
+  changed_when: False
+  ignore_errors: yes
+
+#---------------------------
+# install
+#---------------------------
+- name: install nginx
+  shell: bash -lc "amazon-linux-extras install -y nginx1"
+  become: yes
+  when: has_nginx is failed
